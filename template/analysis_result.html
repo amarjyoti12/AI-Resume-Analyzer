@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis Results</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow p-4">
+
+        <h4 class="mb-3">Resume Score & AI Analysis</h4>
+
+        <h5>Candidate: {{ resume.name }}</h5>
+        <p class="text-muted">{{ resume.email }}</p>
+
+        
+{% if score is not None %}
+<div class="card border-primary text-center mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Resume Score</h5>
+        <h2 class="display-4 text-primary">
+            {{ score }}<small class="fs-4">/100</small>
+        </h2>
+        
+<div class="progress mt-3" style="height: 12px;">
+    <div class="progress-bar {% if score >= 75 %}bg-success{% elif score >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+         role="progressbar"
+         style="width: {{ score }}%;"
+         aria-valuenow="{{ score }}"
+         aria-valuemin="0"
+         aria-valuemax="100">
+    </div>
+</div>
+
+    </div>
+</div>
+{% else %}
+<div class="alert alert-warning">
+    Resume score was not found in the AI response. Please analyze again.
+</div>
+{% endif %}
+
+
+        <hr>
+
+
+
+<h4 class="mb-3">Job Description Matching</h4>
+
+<form method="POST" >
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="job_description" class="form-label">
+            Paste Job Description
+        </label>
+
+        <textarea
+            name="job_description"
+            id="job_description"
+            class="form-control"
+            rows="6"
+            placeholder="Paste the job requirements here..."
+            required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        Match Skills
+    </button>
+</form>
+
+
+
+{% if job_match %}
+<div class="mt-4">
+    <h5>Job Match Results</h5>
+    <div class="bg-white border rounded p-3">
+        <pre style="white-space: pre-wrap; font-family: inherit;">{{ job_match }}</pre>
+    </div>
+</div>
+{% endif %}
+
+
+        <h4 class="mb-3">Analysis Results</h4>
+
+        <div class="bg-white border rounded p-3">
+            <pre style="white-space: pre-wrap; font-family: inherit;">{{ analysis }}</pre>
+        </div>
+
+        
+<div class="mt-4">
+    <a href="{% url 'download_analysis_pdf' resume.id %}"
+       class="btn btn-success">
+        Download Analysis PDF
+    </a>
+
+    <a href="{% url 'resume_list' %}" class="btn btn-secondary">
+        Back to Resumes
+    </a>
+
+    <a href="{% url 'home' %}" class="btn btn-primary">
+        Upload Another Resume
+    </a>
+</div>
+
+    </div>
+</div>
+
+</body>
+</html>
